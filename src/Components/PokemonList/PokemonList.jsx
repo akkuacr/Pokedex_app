@@ -15,7 +15,7 @@ function PokemonList(){
     const [isLoading,setIsLoading] = useState(true);
 
    const POKEDEX_URL= 'https://pokeapi.co/api/v2/pokemon';
-   
+
   async function  downloadPokemons(){
     
     const response = await axios.get(POKEDEX_URL);//this downloads list of 20 pokemons
@@ -65,11 +65,20 @@ function PokemonList(){
 
     return(
 
-        <div className="pokemon-List-wrapper">
-           <div>pokemon List</div>  
+        < div className="pokemon-List-wrapper">
+           
+            <div className="pokemon-wrapper">
             {(isLoading)?'Loading':
                PokemonList.map((p)=><Pokemon name={p.name} image={p.image} key={p.id} />)
             }
+            </div>
+
+            <div className="controls">
+                <button>Prev</button>
+                <button>Next</button>
+
+            </div>
+            
         </div>        
 
     )
