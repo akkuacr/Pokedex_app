@@ -34,19 +34,21 @@ function PokemonList(){
  //   setIsLoading(true);
      
     setPokemonListState({...pokemonListState,isLoading:true});
+    
 
 
 
     const response = await axios.get(pokemonListState.POKEDEX_URL);//this downloads list of 20 pokemons
     const pokemonResults = response.data.results; // we get the array of pokemons from result
     
-    console.log(response.data);
-    setPokemonListState({
-        ...pokemonListState,
+    console.log("response is this",response.data);
+    console.log("after set",pokemonListState);
+    setPokemonListState((state)=>({
+        ...state,
         nextUrl:response.data.next,
-        prevUrl:response.data.prev
-    });
-
+        prevUrl:response.data.previous
+    }));
+    console.log("before set",pokemonListState);
 
 
     //iterating over the array of pokemons,and using their url ,to create an array of promises
@@ -73,9 +75,13 @@ function PokemonList(){
     );
     console.log(res);
 
-    setPokemonListState({...pokemonListState,
+    //agr tum ek sath multiple state ko re -render krna ho toh tum yeh kr skte ho
+    //dek isme ho yeh rha tha na agr hum callback ko pass ni kr rhe the toh woh setPokemonList current state ko ni utha ra tha similar to case of overloading esa krke usne current state ko uthaya
+
+    setPokemonListState((state)=>({
+        ...state,
         pokemonList:res,
-        isLoading:false});
+        isLoading:false}));
 
 
 
@@ -104,8 +110,14 @@ function PokemonList(){
             </div>
 
             <div className="controls">
-                <button disabled={pokemonListState.prevUrl == null}  onClick={()=>setPokemonListState({...pokemonListState,POKEDEX_URL:pokemonListState.prevUrl})} >Prev</button>
-                <button disabled={pokemonListState.nextUrl == null}  onClick={()=>setPokemonListState({...pokemonListState,POKEDEX_URL:pokemonListState.nextUrl})} >Next</button>
+                <button disabled={pokemonListState.prevUrl == null}  onClick={()=>{
+                    const nextUrlToSet = pokemonListState.prevUrl;
+                    setPokemonListState({...pokemonListState,POKEDEX_URL:nextUrlToSet})
+                    }} >Prev</button>
+                <button disabled={pokemonListState.nextUrl == null}  onClick={()=>{
+                      const nextUrlToSet = pokemonListState.nextUrl;
+                    setPokemonListState({...pokemonListState,POKEDEX_URL:nextUrlToSet})
+                   }} >Next</button>
 
             </div>
             
